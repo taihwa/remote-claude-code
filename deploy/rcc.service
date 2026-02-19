@@ -1,0 +1,24 @@
+[Unit]
+Description=Remote Claude Code Server
+After=network.target
+
+[Service]
+Type=simple
+User=<your-user>
+WorkingDirectory=/path/to/remote-claude-code
+ExecStart=/usr/bin/env node --import tsx server/src/index.ts
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=rcc
+
+# Environment (alternatively use EnvironmentFile)
+EnvironmentFile=/path/to/remote-claude-code/.env
+
+# Node.js / Claude CLI가 nvm 등으로 설치된 경우 PATH 지정
+Environment=PATH=/home/<your-user>/.local/bin:/home/<your-user>/.nvm/versions/node/v22.x.x/bin:/usr/local/bin:/usr/bin:/bin
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target
