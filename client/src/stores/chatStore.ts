@@ -251,6 +251,10 @@ export const useChatStore = create<ChatStore>()((set, get) => ({
   clearToken: () => {
     try {
       localStorage.removeItem('rcc-token');
+      localStorage.removeItem('rcc-session-history');
+      Object.keys(localStorage)
+        .filter((key) => key.startsWith('rcc-messages-'))
+        .forEach((key) => localStorage.removeItem(key));
     } catch {
       // ignore storage errors
     }
