@@ -23,8 +23,13 @@ npm run build
 echo "[3/4] Installing systemd service..."
 
 CURRENT_USER="$(whoami)"
-NODE_BIN="$(dirname "$(which node)")"
+NODE_PATH="$(which node)"
+NODE_BIN="$(dirname "$NODE_PATH")"
+NODE_VERSION="$(basename "$(dirname "$(dirname "$NODE_PATH")")")"
 CLAUDE_BIN="$(dirname "$(which claude 2>/dev/null || echo "/usr/local/bin/claude")")"
+
+echo "  Detected node: $NODE_PATH ($(node -v))"
+echo "  Detected claude: $(which claude 2>/dev/null || echo 'not found')"
 
 # 템플릿에서 실제 경로로 치환하여 임시 파일 생성
 TEMP_SERVICE=$(mktemp)
@@ -32,7 +37,9 @@ sed \
     -e "s|User=<your-user>|User=$CURRENT_USER|g" \
     -e "s|WorkingDirectory=/path/to/remote-claude-code|WorkingDirectory=$PROJECT_DIR|g" \
     -e "s|EnvironmentFile=/path/to/remote-claude-code/.env|EnvironmentFile=$PROJECT_DIR/.env|g" \
-    -e "s|Environment=PATH=/home/<your-user>/.local/bin:/home/<your-user>/.nvm/versions/node/v22.x.x/bin:/usr/local/bin:/usr/bin:/bin|Environment=PATH=$NODE_BIN:$CLAUDE_BIN:/usr/local/bin:/usr/bin:/bin|g" \
+    -e "s|/home/<your-user>/.nvm/versions/node/<node-version>/bin/node|$NODE_PATH|g" \
+    -e "s|/home/<your-user>/.nvm/versions/node/<node-version>/bin|$NODE_BIN|g" \
+    -e "s|/home/<your-user>/.local/bin|/home/$CURRENT_USER/.local/bin|g" \
     "$SERVICE_FILE" > "$TEMP_SERVICE"
 
 sudo cp "$TEMP_SERVICE" "$SYSTEMD_DIR/$SERVICE_NAME.service"

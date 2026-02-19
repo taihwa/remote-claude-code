@@ -6,7 +6,7 @@ After=network.target
 Type=simple
 User=<your-user>
 WorkingDirectory=/path/to/remote-claude-code
-ExecStart=/usr/bin/env node --import tsx server/src/index.ts
+ExecStart=/home/<your-user>/.nvm/versions/node/<node-version>/bin/node --import tsx server/src/index.ts
 Restart=on-failure
 RestartSec=5
 StandardOutput=journal
@@ -16,8 +16,8 @@ SyslogIdentifier=rcc
 # Environment (alternatively use EnvironmentFile)
 EnvironmentFile=/path/to/remote-claude-code/.env
 
-# Node.js / Claude CLI가 nvm 등으로 설치된 경우 PATH 지정
-Environment=PATH=/home/<your-user>/.local/bin:/home/<your-user>/.nvm/versions/node/v22.x.x/bin:/usr/local/bin:/usr/bin:/bin
+# nvm으로 설치한 Node.js / Claude CLI PATH
+Environment=PATH=/home/<your-user>/.nvm/versions/node/<node-version>/bin:/home/<your-user>/.local/bin:/usr/local/bin:/usr/bin:/bin
 Environment=NODE_ENV=production
 
 [Install]
