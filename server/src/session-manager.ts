@@ -39,11 +39,12 @@ export class SessionManager {
     const tmpDir = mkdtempSync(path.join(tmpdir(), 'rcc-'));
     this.mcpConfigPath = path.join(tmpDir, 'mcp-config.json');
     const mcpServerScript = path.resolve(__dirname, 'mcp-permission-server.ts');
+    const tsxBin = path.resolve(__dirname, '../../../node_modules/.bin/tsx');
     const mcpConfig = {
       mcpServers: {
         permission: {
-          command: 'node',
-          args: ['--import', 'tsx', mcpServerScript],
+          command: tsxBin,
+          args: [mcpServerScript],
           env: { RCC_PORT: String(port) },
         },
       },
